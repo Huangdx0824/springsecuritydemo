@@ -24,13 +24,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 自定义登入页面
                 .loginPage("/login.html")
                 // 登录成功后跳转页面，Post请求
-                // .successForwardUrl("/toMain")
+                .successForwardUrl("/toMain")
                 // 登录成功后处理器，不能和successForwardUrl共存
-                .successHandler(new MyAuthenticationSuccessHandler("https://github.com/"))
+                // .successHandler(new MyAuthenticationSuccessHandler("https://github.com/"))
                 // 登录失败跳转的页面，Post请求
-                // .failureForwardUrl("/toError");
+                .failureForwardUrl("/toError");
                 // 登录失败后处理器，failureForwardUrl共存
-                .failureHandler(new MyAuthenticationFailureHandler("/error.html"));
+                // .failureHandler(new MyAuthenticationFailureHandler("/error.html"));
 
 
         // 授权登入
@@ -43,9 +43,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/js/**","/css/**","/images/**").permitAll()
                 // 所有后缀为.png都会被放行
                 // .antMatchers("/**/*.png").permitAll()
+                //正则表达式匹配
                 .regexMatchers("[.]png").permitAll()
-                //单独放行POST,GET请求
-                .regexMatchers(HttpMethod.GET,"/demo").permitAll()
+                // .regexMatchers(HttpMethod.GET,"/demo").permitAll()
+                // .mvcMatchers("/demo").servletPath("/huang").permitAll()
+                .antMatchers("/huang/demo").permitAll()
+                // 设置指定一个权限才能跳转(严格区分大小写)
+                // .antMatchers("/main1.html").hasAuthority("admin")
+                // 设置指定多个权限能跳转
+                // .antMatchers("main1.html").hasAnyAuthority("admin","admiN")
+                // 单个角色权限
+                // .antMatchers("main1.html").hasRole("abc")
+                // 多个角色权限
+                .antMatchers("main1.html").hasAnyRole("abc,cab")
                 // 所有请求都必须被认证，必须登入后才能认证
                 .anyRequest().authenticated();
 
