@@ -1,7 +1,9 @@
 package com.huang.config;
 
+import com.huang.handler.MyAccessDeniedHandler;
 import com.huang.handler.MyAuthenticationFailureHandler;
 import com.huang.handler.MyAuthenticationSuccessHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,6 +15,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired
+    private MyAccessDeniedHandler myAccessDeniedHandler;
+
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.formLogin()
@@ -63,6 +69,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // 关闭csrf防火墙
         http.csrf().disable();
+
+
+        http.exceptionHandling()
+                .accessDeniedHandler(myAccessDeniedHandler);
 
     }
 
