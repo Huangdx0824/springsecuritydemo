@@ -32,11 +32,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private PersistentTokenRepository persistentTokenRepository;
 
-
-
-
-
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.formLogin()
@@ -64,7 +59,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // .antMatchers("/login").access("permitAll()")
                 // error.html不需要认证
                 .antMatchers("/error.html").permitAll()
-                // .antMatchers("/login.html").access("permitAll()")
                 // 放行静态资源
                 .antMatchers("/js/**","/css/**","/images/**").permitAll()
                 // 所有后缀为.png都会被放行
@@ -82,7 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // .antMatchers("main1.html").hasRole("abc")
                 // .antMatchers("/main1.html").access("hasRole(\"abc\")")
                 // 多个角色权限
-                // .antMatchers("main1.html").hasAnyRole("abc,cab")
+                // .antMatchers("demo1.html").hasAnyRole("abc, insert, delete")
                 // ip判断
                 // .antMatchers("/main1.html").hasIpAddress("127.0.0.1")
                 // 所有请求都必须被认证，必须登入后才能认证
