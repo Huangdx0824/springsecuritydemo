@@ -7,7 +7,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-@EnableGlobalMethodSecurity(securedEnabled = true) //开启SpringSecurity访问控制的注解
+@EnableGlobalMethodSecurity(securedEnabled = true,prePostEnabled = true) //开启SpringSecurity访问控制的注解，开启@PreAuthorize 注解。
 @SpringBootApplication
 public class SpringsecuritydemoApplication {
 

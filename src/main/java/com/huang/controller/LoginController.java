@@ -2,6 +2,7 @@ package com.huang.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +29,8 @@ public class LoginController {
      *
      * @return
      */
-    @Secured("ROLE_abc") //开启权限abc
+    // @Secured("ROLE_abc") //开启权限abc
+    @PreAuthorize("hasRole('abc')") //PreAuthorize 的表达式允许ROLE_开头，也可以不以ROLE_开头，配置类允许ROLE_开头
     @RequestMapping("toMain")
     public String toMain() {
         return "redirect:main.html";
