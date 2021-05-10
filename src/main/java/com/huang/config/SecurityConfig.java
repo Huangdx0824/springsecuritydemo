@@ -28,6 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsServiceImpl userDetailsService;
     @Autowired
     private DataSource dataSource;
+
     @Autowired
     private PersistentTokenRepository persistentTokenRepository;
 
@@ -98,13 +99,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //记住我
         http.rememberMe()
                 //自定义失效时间 ,单位秒
-                .tokenValiditySeconds(60)
+                .tokenValiditySeconds(60) //设置tokenValiditySeconds生效时,间单位s, 默认是2周
 
-                // .rememberMeParameter()
+                // .rememberMeParameter() //修改rememberMe前端复选框的name属性值, 默认为remember-me
                 // 自定义登入逻辑
-                .userDetailsService(userDetailsService)
+                .userDetailsService(userDetailsService) //登录逻辑交给哪个对象
                 // 持久层对象
-                .tokenRepository(persistentTokenRepository);
+                .tokenRepository(persistentTokenRepository); //实现PersistentTokenRepository方法后就可以持久化登陆信息到数据库
     }
 
     @Bean
