@@ -19,6 +19,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private MyAccessDeniedHandler myAccessDeniedHandler;
 
 
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.formLogin()
@@ -42,31 +43,34 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // 授权登入
         http.authorizeRequests()
                 // login.html不需要认证
-                .antMatchers("/login.html").permitAll()
+                // .antMatchers("/login.html").permitAll()
+                .antMatchers("/login").access("permitAll()")
                 // error.html不需要认证
-                .antMatchers("/error.html").permitAll()
+                // .antMatchers("/error.html").permitAll()
+                .antMatchers("/login.html").access("permitAll()")
                 // 放行静态资源
                 .antMatchers("/js/**","/css/**","/images/**").permitAll()
                 // 所有后缀为.png都会被放行
                 // .antMatchers("/**/*.png").permitAll()
                 //正则表达式匹配
-                .regexMatchers("[.]png").permitAll()
+                // .regexMatchers("[.]png").permitAll()
                 // .regexMatchers(HttpMethod.GET,"/demo").permitAll()
                 // .mvcMatchers("/demo").servletPath("/huang").permitAll()
-                .antMatchers("/huang/demo").permitAll()
+                // .antMatchers("/huang/demo").permitAll()
                 // 设置指定一个权限才能跳转(严格区分大小写)
                 // .antMatchers("/main1.html").hasAuthority("admin")
                 // 设置指定多个权限能跳转
-                // .antMatchers("main1.html").hasAnyAuthority("admin","admiN")
+                // .antMatchers("main1.html").hasAnyAuthority("admin","abc")
                 // 单个角色权限
                 // .antMatchers("main1.html").hasRole("abc")
+                .antMatchers("/main1.html").access("hasRole(\"abc\")")
                 // 多个角色权限
                 // .antMatchers("main1.html").hasAnyRole("abc,cab")
-                // 通过指定的ip地址进行跳转
-                .antMatchers("/main1.html").hasIpAddress("127.0.0.1")
+                // ip判断
+                // .antMatchers("/main1.html").hasIpAddress("127.0.0.1")
                 // 所有请求都必须被认证，必须登入后才能认证
-                .anyRequest().authenticated();
-
+                // .anyRequest().authenticated();
+                .anyRequest().access("@myServiceImpl.hasPermission(request,authentication)");
         // 关闭csrf防火墙
         http.csrf().disable();
 
