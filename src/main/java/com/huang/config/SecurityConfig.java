@@ -3,20 +3,36 @@ package com.huang.config;
 import com.huang.handler.MyAccessDeniedHandler;
 import com.huang.handler.MyAuthenticationFailureHandler;
 import com.huang.handler.MyAuthenticationSuccessHandler;
+import com.huang.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+
+import javax.sql.DataSource;
 
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
     @Autowired
     private MyAccessDeniedHandler myAccessDeniedHandler;
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
+    @Autowired
+    private DataSource dataSource;
+    @Autowired
+    private PersistentTokenRepository persistentTokenRepository;
+
+
+
 
 
 
@@ -79,11 +95,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.exceptionHandling()
                 .accessDeniedHandler(myAccessDeniedHandler);
 
+        //记住我
+        http.rememberMe()
+                //自定义失效时间 ,单位秒
+                .tokenValiditySeconds(60)
+
+                // .rememberMeParameter()
+                // 自定义登入逻辑
+                .userDetailsService(userDetailsService)
+                // 持久层对象
+                .tokenRepository(persistentTokenRepository);
     }
 
     @Bean
     public PasswordEncoder getPw() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public PersistentTokenRepository getPersistentTokenRepository(){
+        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
+        jdbcTokenRepository.setDataSource(dataSource);
+
+        // 自动建表，第一次启动的时候需要 第二次启动要注释掉
+
+        // jdbcTokenRepository.setCreateTableOnStartup(true);
+        return jdbcTokenRepository;
     }
 
 }
