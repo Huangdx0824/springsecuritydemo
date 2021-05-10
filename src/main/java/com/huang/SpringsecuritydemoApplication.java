@@ -2,11 +2,12 @@ package com.huang;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
+@EnableGlobalMethodSecurity(securedEnabled = true) //开启SpringSecurity访问控制的注解
 @SpringBootApplication
 public class SpringsecuritydemoApplication {
 

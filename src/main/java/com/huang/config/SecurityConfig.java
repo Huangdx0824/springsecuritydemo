@@ -31,9 +31,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 自定义登入页面
                 .loginPage("/login.html")
                 // 登录成功后跳转页面，Post请求
-                // .successForwardUrl("/toMain")
+                .successForwardUrl("/toMain")
                 // 登录成功后处理器，不能和successForwardUrl共存
-                .successHandler(new MyAuthenticationSuccessHandler("/main.html"))
+                // .successHandler(new MyAuthenticationSuccessHandler("/main.html"))
                 // 登录失败跳转的页面，Post请求
                 .failureForwardUrl("/toError");
                 // 登录失败后处理器，failureForwardUrl共存
@@ -43,11 +43,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // 授权登入
         http.authorizeRequests()
                 // login.html不需要认证
-                // .antMatchers("/login.html").permitAll()
-                .antMatchers("/login").access("permitAll()")
+                .antMatchers("/login.html").permitAll()
+                // .antMatchers("/login").access("permitAll()")
                 // error.html不需要认证
-                // .antMatchers("/error.html").permitAll()
-                .antMatchers("/login.html").access("permitAll()")
+                .antMatchers("/error.html").permitAll()
+                // .antMatchers("/login.html").access("permitAll()")
                 // 放行静态资源
                 .antMatchers("/js/**","/css/**","/images/**").permitAll()
                 // 所有后缀为.png都会被放行
@@ -63,18 +63,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // .antMatchers("main1.html").hasAnyAuthority("admin","abc")
                 // 单个角色权限
                 // .antMatchers("main1.html").hasRole("abc")
-                .antMatchers("/main1.html").access("hasRole(\"abc\")")
+                // .antMatchers("/main1.html").access("hasRole(\"abc\")")
                 // 多个角色权限
                 // .antMatchers("main1.html").hasAnyRole("abc,cab")
                 // ip判断
                 // .antMatchers("/main1.html").hasIpAddress("127.0.0.1")
                 // 所有请求都必须被认证，必须登入后才能认证
-                // .anyRequest().authenticated();
-                .anyRequest().access("@myServiceImpl.hasPermission(request,authentication)");
+                .anyRequest().authenticated();
+                // .anyRequest().access("@myServiceImpl.hasPermission(request,authentication)");
         // 关闭csrf防火墙
         http.csrf().disable();
 
 
+        //异常处理
         http.exceptionHandling()
                 .accessDeniedHandler(myAccessDeniedHandler);
 
