@@ -45,12 +45,6 @@ public class LoginController {
         return "redirect:error.html";
     }
 
-    @GetMapping("demo")
-    @ResponseBody
-    public String Demo() {
-        return "demo";
-    }
-
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @RequestMapping("/403")
     @ResponseBody
@@ -61,8 +55,25 @@ public class LoginController {
         return map;
     }
 
-    @RequestMapping("demo1")
-    public String demo1(){
+
+    /**
+     * thymeleaf中获取属性、权限判定
+     *
+     * @return
+     */
+    @RequestMapping("demo")
+    public String Demo() {
         return "demo";
+    }
+
+
+    /**
+     * 跳转到hello页面
+     *
+     * @return
+     */
+    @RequestMapping("hello")
+    public String hello(){
+        return "redirect:hello.html";
     }
 }

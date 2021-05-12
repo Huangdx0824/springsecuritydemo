@@ -1,16 +1,12 @@
 package com.huang.config;
 
 import com.huang.handler.MyAccessDeniedHandler;
-import com.huang.handler.MyAuthenticationFailureHandler;
-import com.huang.handler.MyAuthenticationSuccessHandler;
 import com.huang.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
@@ -48,8 +44,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // .successHandler(new MyAuthenticationSuccessHandler("/main.html"))
                 // 登录失败跳转的页面，Post请求
                 .failureForwardUrl("/toError");
-                // 登录失败后处理器，failureForwardUrl共存
-                // .failureHandler(new MyAuthenticationFailureHandler("/error.html"));
+        // 登录失败后处理器，failureForwardUrl共存
+        // .failureHandler(new MyAuthenticationFailureHandler("/error.html"));
 
 
         // 授权登入
@@ -60,14 +56,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // error.html不需要认证
                 .antMatchers("/error.html").permitAll()
                 // 放行静态资源
-                .antMatchers("/js/**","/css/**","/images/**").permitAll()
+                .antMatchers("/js/**", "/css/**", "/images/**").permitAll()
                 // 所有后缀为.png都会被放行
                 // .antMatchers("/**/*.png").permitAll()
                 //正则表达式匹配
                 // .regexMatchers("[.]png").permitAll()
                 // .regexMatchers(HttpMethod.GET,"/demo").permitAll()
                 // .mvcMatchers("/demo").servletPath("/huang").permitAll()
-                // .antMatchers("/huang/demo").permitAll()
+                // .antMatchers("/hello.html").permitAll()
                 // 设置指定一个权限才能跳转(严格区分大小写)
                 // .antMatchers("/main1.html").hasAuthority("admin")
                 // 设置指定多个权限能跳转
@@ -76,12 +72,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // .antMatchers("main1.html").hasRole("abc")
                 // .antMatchers("/main1.html").access("hasRole(\"abc\")")
                 // 多个角色权限
-                // .antMatchers("demo1.html").hasAnyRole("abc, insert, delete")
+                .antMatchers("/demo.html").hasAnyRole("abc, insert, delete")
                 // ip判断
                 // .antMatchers("/main1.html").hasIpAddress("127.0.0.1")
                 // 所有请求都必须被认证，必须登入后才能认证
                 .anyRequest().authenticated();
-                // .anyRequest().access("@myServiceImpl.hasPermission(request,authentication)");
+        // .anyRequest().access("@myServiceImpl.hasPermission(request,authentication)");
         // 关闭csrf防火墙
         http.csrf().disable();
 
@@ -93,13 +89,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //记住我
         http.rememberMe()
                 //自定义失效时间 ,单位秒
-                .tokenValiditySeconds(60) //设置tokenValiditySeconds生效时,间单位s, 默认是2周
+                .tokenValiditySeconds(300) //设置tokenValiditySeconds生效时,间单位s, 默认是2周
 
                 // .rememberMeParameter() //修改rememberMe前端复选框的name属性值, 默认为remember-me
                 // 自定义登入逻辑
                 .userDetailsService(userDetailsService) //登录逻辑交给哪个对象
                 // 持久层对象
                 .tokenRepository(persistentTokenRepository); //实现PersistentTokenRepository方法后就可以持久化登陆信息到数据库
+        //退出登录
+        http.logout()
+                .logoutSuccessUrl("/login.html"); //退出用户跳转页面
+                //.logoutUrl("/logout")                //修改用户退出时,超链接的name属性值,一般不推荐修改
     }
 
     @Bean
@@ -108,7 +108,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public PersistentTokenRepository getPersistentTokenRepository(){
+    public PersistentTokenRepository getPersistentTokenRepository() {
         JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
         jdbcTokenRepository.setDataSource(dataSource);
 
